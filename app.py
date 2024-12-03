@@ -1,5 +1,6 @@
 import openai
 from flask import Flask
+from slack_sdk import WebClient
 
 app = Flask(__name__)
 
