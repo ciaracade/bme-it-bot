@@ -1,12 +1,16 @@
 import os
+from dotenv import load_dotenv
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
+
+load_dotenv()
 
 client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 
 try:
-    response = client.chat_postMessage(channel='#random', text="Hello world!")
-    assert response["message"]["text"] == "Hello world!"
+    response = client.chat_postMessage(
+        channel='#bme-bot-playground', text="Beamy the BME Bot is all set up! 🚀")
+    assert response["message"]["text"] == "Beamy the BME Bot is all set up! :rocket:"
 except SlackApiError as e:
     # You will get a SlackApiError if "ok" is False
     assert e.response["ok"] is False
