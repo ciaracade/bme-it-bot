@@ -1,23 +1,29 @@
 import os
 from dotenv import load_dotenv
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
+from slack_bolt import App
+from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-load_dotenv()
 
-client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
+def connect_slack():
 
-try:
-    response = client.chat_postMessage(
-        channel='#bme-bot-playground', text="Beamy the BME Bot is all set up! 🚀")
-    assert response["message"]["text"] == "Beamy the BME Bot is all set up! :rocket:"
-except SlackApiError as e:
-    # You will get a SlackApiError if "ok" is False
-    assert e.response["ok"] is False
-    assert e.response["error"]  # str like 'invalid_auth', 'channel_not_found'
-    print(f"Got an error: {e.response['error']}")
-    # Also receive a corresponding status_code
-    assert isinstance(e.response.status_code, int)
-    print(f"Received a response status_code: {e.response.status_code}")
+    load_dotenv()
 
-# From Slack Python SDK API documentation
+    SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
+    SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
+
+    app = App(token=SLACK_BOT_TOKEN)
+
+    # will move app events to another lcoation
+    @app.event("app_mention")
+    def handle_app_mention(event, say):
+        user = event["user"]
+        say(f"Hi there, <@{user}>! Beamy the BME Bot is ready to assist. 🚀")
+
+    # test example
+    @app.event("message")
+    def send_greeting(event, say):
+        if "hello" in event.get("text", "").lower():
+            say("Hi there! 👋 Beamy the BME Bot is here to help!")
+
+    return app
+        

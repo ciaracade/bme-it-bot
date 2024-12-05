@@ -1,4 +1,4 @@
-Thank you for clarifying! Since you’re using the **Slack Python SDK**, let me update the README to reflect a Python-based setup. Here's the revised version:
+This is a draft geenrated by ChatGPT. Tkae lightly haha
 
 # UMich Biomedical Engineering IT Dept Slack Bot
 👩🏽‍💻 A chatbot that seamlessly integrates **TeamDynamix**, **OpenAI**, and **Slack** to streamline ticket management for the **University of Michigan Biomedical Engineering IT Department**. 
