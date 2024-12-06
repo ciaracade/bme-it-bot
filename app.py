@@ -1,14 +1,9 @@
-import openai
 import os
+from config.slack import connect_slack
+from config.slack import connect_slack
 from slack_bolt.adapter.socket_mode import SocketModeHandler
-from config.slack import connect_slack
-from flask import Flask
-from slack_sdk import WebClient
-from config.slack import connect_slack
 
 app = connect_slack()
-
-
 
 if __name__ == "__main__":
     SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
