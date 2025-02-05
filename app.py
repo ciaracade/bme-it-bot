@@ -1,13 +1,25 @@
 import os
-from config.slack import connect_slack
-from config.slack import connect_slack
+from slack_bolt.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+from events.register_events import register_events
+from handlers.register_commands import register_commands
+from config.settings import get_settings
 
-app = connect_slack()
+settings = get_settings()
+
+app = AsyncApp(
+    token=settings.SLACK_BOT_TOKEN,
+    signing_secret=settings.SLACK_SIGNING_SECRET
+)
+
+# Register command handlers
+register_commands(app)
+
+# Register event handlers
+register_events(app)
 
 if __name__ == "__main__":
-    SLACK_APP_TOKEN = os.getenv("SLACK_APP_TOKEN")
-    handler = SocketModeHandler(app, SLACK_APP_TOKEN)
-    print("Beamy the BME Bot is running!")
+    handler = SocketModeHandler(app, settings.SLACK_APP_TOKEN)
     handler.start()
+    print("Beamy the BME Bot is running!")
 

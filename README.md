@@ -1,124 +1,154 @@
-This is a draft geenrated by ChatGPT. Tkae lightly haha
+# BME IT Support Slack Bot
 
-# UMich Biomedical Engineering IT Dept Slack Bot
-👩🏽‍💻 A chatbot that seamlessly integrates **TeamDynamix**, **OpenAI**, and **Slack** to streamline ticket management for the **University of Michigan Biomedical Engineering IT Department**. 
+A Slack bot for the University of Michigan Biomedical Engineering department that handles IT support tickets with AI assistance and learning capabilities.
 
----
+## Features
 
-## 🚀 Features
-- **TeamDynamix Integration**: Automatically fetch, create, and update tickets directly from Slack.
-- **OpenAI-Powered Assistance**: Smart suggestions and automated responses to common IT queries.
-- **Slack Workflow Compatibility**: Seamless integration with existing Slack channels and workflows.
-- **Time-Saving**: Reduces manual effort, allowing IT staff to focus on more critical tasks.
+### Core Functionality
+- Create and manage IT support tickets through Slack
+- AI-powered ticket categorization and solution suggestions
+- Integration with TeamDynamix ticketing system
+- Automated solution learning from past tickets
+- Documentation search from internal Google Drive
 
----
+### Smart Features
+- Learns from successful solutions
+- Provides relevant documentation from internal knowledge base
+- Tracks solution effectiveness through feedback
+- Analyzes patterns in successful solutions
+- Maintains a database of proven solutions
 
-## 📖 Table of Contents
-1. [Getting Started](#-getting-started)
-2. [Installation](#-installation)
-3. [Usage](#-usage)
-4. [Configuration](#-configuration)
-5. [Features in Depth](#-features-in-depth)
-6. [Contributing](#-contributing)
-7. [License](#-license)
-8. [Contact](#-contact)
+### Commands
+```
+/ticket-create - Create a new support ticket
+/ticket-status <ticket_id> - Check ticket status
+/my-tickets - View your assigned tickets
+/ticket-assign <ticket_id> <email> - Assign ticket to someone
+/ticket-close <ticket_id> <resolution> - Close a ticket
+```
 
----
-
-## 🛠️ Getting Started
+## Setup
 
 ### Prerequisites
-- Python 3.7 or higher
-- Slack Workspace with bot permissions
-- TeamDynamix API credentials
-- OpenAI API key
-
----
-
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/bme-it-slackbot.git
-   cd bme-it-slackbot
-   ```
-
-2. Create a virtual environment (optional but recommended):
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Configure the environment variables (see [Configuration](#-configuration)).
-
----
-
-## ⚙️ Configuration
-Create a `.env` file in the root directory with the following variables:
-
-```env
-SLACK_BOT_TOKEN=your-slack-bot-token
-SLACK_APP_TOKEN=your-slack-app-token
-TEAMDYNAMIX_API_KEY=your-teamdynamix-api-key
-OPENAI_API_KEY=your-openai-api-key
+```bash
+# Python 3.8+
+python -m venv venv
+source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+pip install -r requirements.txt
 ```
 
----
+### Environment Configuration
+Create a `.env` file:
+```env
+# Slack Configuration
+SLACK_BOT_TOKEN=xoxb-your-token
+SLACK_APP_TOKEN=xapp-your-token
+SLACK_SIGNING_SECRET=your-secret
 
-## 💻 Usage
-Start the bot with:
+# TeamDynamix Configuration
+TEAMDYNAMIX_BASE_URL=https://your-instance.teamdynamix.com/TDWebApi/
+TEAMDYNAMIX_USERNAME=service_account_username
+TEAMDYNAMIX_PASSWORD=service_account_password
+
+# Google Drive Configuration
+GOOGLE_DRIVE_FOLDER_ID=your_folder_id
+GOOGLE_APPLICATION_CREDENTIALS=config/google_credentials.json
+
+# OpenAI Configuration
+OPENAI_API_KEY=your-api-key
+```
+
+### Database Setup
+The bot uses SQLite by default:
+```bash
+# Initialize database
+python scripts/init_db.py
+```
+
+### Google Drive Setup
+1. Create a Google Cloud project
+2. Enable Drive API
+3. Create service account credentials
+4. Download credentials to `config/google_credentials.json`
+5. Share documentation folder with service account email
+
+## Architecture
+
+### Components
+- `handlers/` - Slack command and event handlers
+- `services/` - Core business logic services
+- `models/` - Database models
+- `utils/` - Helper utilities
+- `tests/` - Test suite
+
+### Services
+- `TeamDynamixTickets` - TeamDynamix integration
+- `OpenAIService` - AI solution generation
+- `GoogleDriveService` - Documentation search
+- `DatabaseService` - Solution storage and retrieval
+- `AnalysisService` - Solution pattern analysis
+
+### Data Flow
+1. User creates ticket in Slack
+2. Bot searches documentation and past solutions
+3. AI generates solution using available information
+4. Solution stored in database
+5. Ticket created in TeamDynamix
+6. On closure, bot requests feedback
+7. Feedback updates solution success rate
+
+## Testing
 
 ```bash
-python bot.py
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=.
+
+# Run specific test file
+pytest tests/test_handlers/test_ticket_handlers.py
 ```
 
-Once running, invite the bot to your desired Slack channel and start interacting with it using commands like `/ticket create` or `/help`.
+## Development
 
----
+### Adding New Features
+1. Create feature branch
+2. Add tests
+3. Implement feature
+4. Update documentation
+5. Submit PR
 
-## 📚 Features in Depth
-- **Ticket Creation**: Use `/ticket create` to generate a new ticket in TeamDynamix.
-- **Status Updates**: Query ticket statuses with `/ticket status <ticket_id>`.
-- **AI Responses**: Get natural language answers to technical queries using OpenAI's API.
-- **Custom Commands**: Easily add custom commands for your department's unique workflows.
+### Code Style
+- Follow PEP 8
+- Use type hints
+- Add docstrings
+- Keep functions focused
 
----
+## Monitoring
 
-## 🤝 Contributing
-We welcome contributions! Please follow these steps:
+### Logs
+- Application logs in `logs/app.log`
+- Error logs in `logs/error.log`
+- Solution analytics in `logs/analytics.log`
 
-1. Fork the repository.
-2. Create a new branch:
-   ```bash
-   git checkout -b feature/your-feature
-   ```
-3. Commit your changes and push:
-   ```bash
-   git commit -m "Add your feature description"
-   git push origin feature/your-feature
-   ```
-4. Open a Pull Request.
+### Analytics
+Access solution analytics:
+```python
+from services.analysis_service import SolutionAnalysisService
+analytics = SolutionAnalysisService(db_service)
+stats = await analytics.analyze_solutions()
+```
 
----
+## Contributing
+1. Fork repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
 
-## 📄 License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+## License
+MIT License - See LICENSE file
 
----
-
-## 📬 Contact
-For questions or support, please reach out to the **Biomedical Engineering IT Department** at `it-support@umich.edu`.
-
----
-
-### Key Changes:
-1. **Removed Node.js references**: Updated the prerequisites and installation steps for Python.
-2. **Slack Python SDK setup**: Adjusted the configuration and startup instructions for a Python project.
-3. **Simplified startup command**: `python bot.py` instead of Node commands.
-4. **Virtual environment**: Added optional virtual environment setup to ensure dependency isolation.
-
-Let me know if further tweaks are needed!
+## Support
+Contact BME IT Support for assistance
