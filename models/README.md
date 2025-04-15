@@ -1,2 +1,4 @@
 # Notes
-- representing the data and business logic
+- data models of tickets and users
+
+users: tickets[]
